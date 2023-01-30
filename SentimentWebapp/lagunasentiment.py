@@ -22,13 +22,8 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import io
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time
-import os
-import datatest as dt
 
 
-#validating row header
-dt.register_accessors()
 
 st.set_page_config(layout="wide")
 
@@ -389,6 +384,8 @@ def wordcloud():
     #wordlocud pic
     maskpic = np.array(Image.open('images/facebooklogo.png'))
 
+    cols = {'Municipalities', 'Comments','Scores', 'Analysis', 'Category', 'Translations'}
+
     st.title(f"Word Cloud")
     dataframe_append = pd.DataFrame()    
     multiple_files = st.file_uploader('Upload CSV',type="csv", accept_multiple_files=True)
@@ -396,7 +393,18 @@ def wordcloud():
         
         file.seek(0)
         df = pd.read_csv(file)
-        dataframe_append = dataframe_append.append(df, ignore_index=True)
+
+        colsname = df.axes[0] #headername/column names
+         
+#validating if the file has the same column
+        
+        if all(i for i in colsname if i not in cols):
+            st.error("Please make it sure your column name in your csv file is the same")
+        else:
+            dataframe_append = dataframe_append.append(df, ignore_index=True)
+    
+
+        
     
 
 #checking is file not empty before display it
